@@ -92,6 +92,8 @@ namespace ARMSBackend
                 //});
 
                 c.OperationFilter<AuthResponsesOperationFilter>();
+
+                c.EnableAnnotations();
             });
 
             services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();

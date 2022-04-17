@@ -27,16 +27,16 @@ namespace ARMSBackend.Controllers
 
         // GET: api/<UsersController>
         [HttpGet]
-        public ActionResult<List<UserDTO>> Get()
+        public ActionResult<List<User>> Get()
         {
-            List<UserDTO> newList = usersRepo.AllUsers().Select(u => new UserDTO(u)).ToList();
+            List<User> newList = usersRepo.AllUsers();
 
             return Ok(newList);
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<UserDTO> Get(int id)
+        public ActionResult<User> Get(int id)
         {
             User user = usersRepo.GetUser(id);
 

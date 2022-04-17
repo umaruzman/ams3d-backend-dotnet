@@ -1,4 +1,5 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,18 @@ namespace ARMSBackend.Repository
             this._context = context;
         }
 
-        public User AddUser(User user)
+        public User AddUser(UserDTO user)
         {
-            throw new NotImplementedException();
+            User newUser = new User()
+            {
+                Name = user.Name,
+                Password = user.Password
+            };
+
+            this._context.Users.Add(newUser);
+            this._context.SaveChanges();
+
+            return newUser;
         }
 
         public List<User> AllUsers()

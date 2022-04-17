@@ -1,4 +1,5 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,7 @@ namespace ARMSBackend.Repository
     {
         List<User> AllUsers();
         User GetUser(int userid);
-
-        User AddUser(User user);
+        User AddUser(UserDTO user);
 
     }
 }
