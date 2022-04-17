@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,26 +25,50 @@ namespace ARMSBackend.Controllers
 
         // GET: api/<UsersController>
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public ActionResult<ResponseDTO<List<User>>> Get()
         {
-            List<User> newList = usersRepo.AllUsers();
+            try
+            {
+                List<User> newList = usersRepo.AllUsers();
 
-            return Ok(newList);
+                return Ok(new ResponseDTO<List<User>>(true, newList));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO(false, ex.Message));
+            }
         }
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public ActionResult<ResponseDTO<User>> Get(int id)
         {
-            User user = usersRepo.GetUser(id);
+            try
+            {
+                User user = usersRepo.GetUser(id);
 
-            return Ok(new UserDTO(user));
+                return Ok(new ResponseDTO<User>(true, user));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO(false, ex.Message));
+            }
         }
 
         // POST api/<UsersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<ResponseDTO<User>> Post([FromBody] User user)
         {
+            try
+            {
+                User newUser = usersRepo.AddUser(user);
+
+                return Ok(new ResponseDTO<User>(true, user));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO(false, ex.Message));
+            }
         }
 
         // PUT api/<UsersController>/5

@@ -1,9 +1,6 @@
-﻿using ARMSBackend.DTOs;
-using ARMSBackend.Models;
-using System;
+﻿using ARMSBackend.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ARMSBackend.Repository
 {
@@ -17,14 +14,9 @@ namespace ARMSBackend.Repository
             this._context = context;
         }
 
-        public User AddUser(UserDTO user)
+        public User AddUser(User user)
         {
-            User newUser = new User()
-            {
-                Name = user.Name,
-                Password = user.Password
-            };
-
+            User newUser = user;
             this._context.Users.Add(newUser);
             this._context.SaveChanges();
 
