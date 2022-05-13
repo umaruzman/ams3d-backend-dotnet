@@ -20,8 +20,15 @@ namespace ARMSBackend
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.UseSerialColumns();
+
+            modelBuilder.Seed();
+
         }
 
+
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
     }
 }

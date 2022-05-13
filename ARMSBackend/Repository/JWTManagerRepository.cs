@@ -37,7 +37,7 @@ namespace ARMSBackend.Repository
             {
                 Subject = new ClaimsIdentity(new Claim[]
               {
-             new Claim(ClaimTypes.Name, users.Name)
+             new Claim(ClaimTypes.Name, users.Username)
               }),
                 Expires = DateTime.UtcNow.AddDays(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
