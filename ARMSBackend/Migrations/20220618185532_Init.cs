@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ARMSBackend.Migrations
@@ -8,6 +9,19 @@ namespace ARMSBackend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Assets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Name = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Assets", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Organizations",
                 columns: table => new
                 {
@@ -15,7 +29,9 @@ namespace ARMSBackend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Contact = table.Column<string>(type: "text", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: true)
+                    Status = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,7 +60,9 @@ namespace ARMSBackend.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     Address = table.Column<string>(type: "text", nullable: true),
                     Contact = table.Column<string>(type: "text", nullable: true),
-                    OrganizationId = table.Column<int>(type: "integer", nullable: true)
+                    OrganizationId = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -70,7 +88,9 @@ namespace ARMSBackend.Migrations
                     UserStatus = table.Column<bool>(type: "boolean", nullable: false),
                     UserRoleId = table.Column<int>(type: "integer", nullable: true),
                     BranchId = table.Column<int>(type: "integer", nullable: true),
-                    OrganizationId = table.Column<int>(type: "integer", nullable: true)
+                    OrganizationId = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,8 +117,8 @@ namespace ARMSBackend.Migrations
 
             migrationBuilder.InsertData(
                 table: "Organizations",
-                columns: new[] { "Id", "Contact", "Name", "Status" },
-                values: new object[] { 1, "00000000", "TestOrganization", "active" });
+                columns: new[] { "Id", "Contact", "CreatedAt", "LastUpdate", "Name", "Status" },
+                values: new object[] { 1, "00000000", new DateTime(2022, 6, 19, 0, 25, 32, 1, DateTimeKind.Local).AddTicks(1750), new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(3310), "TestOrganization", "active" });
 
             migrationBuilder.InsertData(
                 table: "UserRoles",
@@ -111,8 +131,18 @@ namespace ARMSBackend.Migrations
 
             migrationBuilder.InsertData(
                 table: "Branches",
-                columns: new[] { "Id", "Address", "Contact", "Name", "OrganizationId" },
-                values: new object[] { 1, "", "00000000", "TestOrganization", 1 });
+                columns: new[] { "Id", "Address", "Contact", "CreatedAt", "LastUpdate", "Name", "OrganizationId" },
+                values: new object[] { 1, "", "00000000", new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(4540), new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(4550), "TestOrganization", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "BranchId", "CreatedAt", "Email", "LastUpdate", "OrganizationId", "Password", "UserRoleId", "UserStatus", "UserType", "Username" },
+                values: new object[] { 1, null, new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(7110), "super@admin.com", new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(7120), null, "password", 1, true, "super-admin", "superadmin" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "BranchId", "CreatedAt", "Email", "LastUpdate", "OrganizationId", "Password", "UserRoleId", "UserStatus", "UserType", "Username" },
+                values: new object[] { 2, 1, new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(8580), "first@admin.com", new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(8590), 1, "Password", 1, true, "admin", "admin1" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branches_OrganizationId",
@@ -137,6 +167,9 @@ namespace ARMSBackend.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Assets");
+
             migrationBuilder.DropTable(
                 name: "Users");
 

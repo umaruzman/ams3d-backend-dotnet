@@ -1,4 +1,6 @@
-﻿using ARMSBackend.Models;
+﻿using System;
+using System.Linq;
+using ARMSBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -25,10 +27,32 @@ namespace ARMSBackend
 
         }
 
+        public override int SaveChanges()
+        {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is BaseEntity && (
+                    e.State == EntityState.Added
+                    || e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                ((BaseEntity)entityEntry.Entity).LastUpdate = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entityEntry.Entity).CreatedAt = DateTime.Now;
+                }
+            }
+
+            return base.SaveChanges();
+        }
+
 
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Asset> Assets { get; set; }
     }
 }

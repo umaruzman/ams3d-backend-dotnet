@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ARMSBackend.Models
 {
-    public class Organization
+    public class Organization : BaseEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }

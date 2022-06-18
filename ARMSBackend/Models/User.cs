@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace ARMSBackend.Models
 {
-    public class User
+    public class User : BaseEntity
     {
         [SwaggerSchema(ReadOnly = true)]
         public int Id { get; set; }

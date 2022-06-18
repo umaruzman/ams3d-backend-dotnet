@@ -30,7 +30,9 @@ namespace ARMSBackend
                     Id = 1,
                     Name = "TestOrganization",
                     Contact = "00000000",
-                    Status = "active"
+                    Status = "active",
+                    CreatedAt = DateTime.Now,
+                    LastUpdate = DateTime.Now
                 }
             );
 
@@ -41,7 +43,38 @@ namespace ARMSBackend
                     Name = "TestOrganization",
                     Contact = "00000000",
                     Address = "",
-                    OrganizationId = 1
+                    OrganizationId = 1,
+                    CreatedAt = DateTime.Now,
+                    LastUpdate = DateTime.Now,
+                }
+            );
+
+            modelBuilder.Entity<User>().HasData(
+                new
+                {
+                    Id = 1,
+                    Username = "superadmin",
+                    Password = "password",
+                    Email = "super@admin.com",
+                    UserType = "super-admin",
+                    UserStatus = true,
+                    UserRoleId = 1,
+                    CreatedAt =  DateTime.Now,
+                    LastUpdate = DateTime.Now
+                },
+                new
+                {
+                    Id = 2,
+                    Username = "admin1",
+                    Password = "Password",
+                    Email = "first@admin.com",
+                    UserType = "admin",
+                    OrganizationId = 1,
+                    BranchId = 1,
+                    UserStatus = true,
+                    UserRoleId = 1,
+                    CreatedAt =  DateTime.Now,
+                    LastUpdate = DateTime.Now
                 }
             );
         }
