@@ -1,6 +1,7 @@
 ﻿using ARMSBackend.DTOs;
 using ARMSBackend.Models;
 using ARMSBackend.Repository;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,22 +17,23 @@ namespace ARMSBackend.Controllers
     public class UsersController : ControllerBase
     {
         private IUsersRepository usersRepo;
+        private IMapper _mapper;
 
-
-        public UsersController(IUsersRepository usersRepository)
+        public UsersController(IUsersRepository usersRepository, IMapper mapper)
         {
             this.usersRepo = usersRepository;
+            this._mapper = mapper;
         }
 
         // GET: api/<UsersController>
         [HttpGet]
-        public ActionResult<ResponseDTO<List<User>>> Get()
+        public ActionResult<ResponseDTO<List<UserReadDto>>> Get()
         {
             try
             {
-                List<User> newList = usersRepo.AllUsers();
-
-                return Ok(new ResponseDTO<List<User>>(true, newList));
+                var newList = usersRepo.AllUsers();
+                    
+                return Ok(new ResponseDTO<List<UserReadDto>>(true, _mapper.Map<List<UserReadDto>>(newList)));
             }
             catch (Exception ex)
             {
@@ -41,13 +43,14 @@ namespace ARMSBackend.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<ResponseDTO<User>> Get(int id)
+        public ActionResult<ResponseDTO<UserReadDto>> Get(int id)
         {
             try
             {
                 User user = usersRepo.GetUser(id);
 
-                return Ok(new ResponseDTO<User>(true, user));
+
+                return Ok(new ResponseDTO<UserReadDto>(true, _mapper.Map<UserReadDto>(user)));
             }
             catch (Exception ex)
             {
@@ -57,13 +60,15 @@ namespace ARMSBackend.Controllers
 
         // POST api/<UsersController>
         [HttpPost]
-        public ActionResult<ResponseDTO<User>> Post([FromBody] User user)
+        public ActionResult<ResponseDTO<User>> Post([FromBody] UserWriteDto user)
         {
             try
             {
-                User newUser = usersRepo.AddUser(user);
+                var newUser = _mapper.Map<User>(user);
 
-                return Ok(new ResponseDTO<User>(true, user));
+                var userRes = usersRepo.AddUser(newUser);
+
+                return Ok(new ResponseDTO<User>(true, userRes));
             }
             catch (Exception ex)
             {
@@ -73,14 +78,35 @@ namespace ARMSBackend.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult<ResponseDTO<User>> Put(int id, [FromBody] UserEditDto value)
         {
+            try
+            {
+                return Ok(new ResponseDTO<User>(true, usersRepo.UpdateUser(id, value)));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO(false, ex.Message));
+            }
         }
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult<ResponseDTO> Delete(int id)
         {
+            try
+            {
+                if (usersRepo.DeleteUser(id))
+                {
+                    return Ok(new ResponseDTO(true, "User Deleted Sucessfully"));
+                }
+
+                return BadRequest(new ResponseDTO(false, "Failed to delete User"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseDTO(false, ex.Message));
+            }
         }
     }
 }

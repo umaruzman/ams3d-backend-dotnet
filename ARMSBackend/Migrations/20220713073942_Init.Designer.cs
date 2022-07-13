@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ARMSBackend.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20220618185532_Init")]
+    [Migration("20220713073942_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,8 +73,8 @@ namespace ARMSBackend.Migrations
                             Id = 1,
                             Address = "",
                             Contact = "00000000",
-                            CreatedAt = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(4540),
-                            LastUpdate = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(4550),
+                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(9305),
+                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(9320),
                             Name = "TestOrganization",
                             OrganizationId = 1
                         });
@@ -111,8 +111,8 @@ namespace ARMSBackend.Migrations
                         {
                             Id = 1,
                             Contact = "00000000",
-                            CreatedAt = new DateTime(2022, 6, 19, 0, 25, 32, 1, DateTimeKind.Local).AddTicks(1750),
-                            LastUpdate = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(3310),
+                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 210, DateTimeKind.Local).AddTicks(4336),
+                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(7397),
                             Name = "TestOrganization",
                             Status = "active"
                         });
@@ -143,7 +143,7 @@ namespace ARMSBackend.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserRoleId")
+                    b.Property<int>("UserRoleId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("UserStatus")
@@ -169,9 +169,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(7110),
+                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(5198),
                             Email = "super@admin.com",
-                            LastUpdate = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(7120),
+                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(5236),
                             Password = "password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -182,9 +182,9 @@ namespace ARMSBackend.Migrations
                         {
                             Id = 2,
                             BranchId = 1,
-                            CreatedAt = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(8580),
+                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(9783),
                             Email = "first@admin.com",
-                            LastUpdate = new DateTime(2022, 6, 19, 0, 25, 32, 18, DateTimeKind.Local).AddTicks(8590),
+                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(9798),
                             OrganizationId = 1,
                             Password = "Password",
                             UserRoleId = 1,
@@ -242,7 +242,9 @@ namespace ARMSBackend.Migrations
 
                     b.HasOne("ARMSBackend.Models.UserRole", "UserRole")
                         .WithMany()
-                        .HasForeignKey("UserRoleId");
+                        .HasForeignKey("UserRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Branch");
 

@@ -1,4 +1,5 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
 using System.Collections.Generic;
 
 namespace ARMSBackend.Repository
@@ -8,6 +9,8 @@ namespace ARMSBackend.Repository
         List<User> AllUsers();
         User GetUser(int userid);
         User AddUser(User user);
+        User UpdateUser(int userid,UserEditDto user);
+        bool DeleteUser(int userid);
 
     }
 }

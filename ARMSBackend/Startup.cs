@@ -1,3 +1,4 @@
+using ARMSBackend.Profiles;
 using ARMSBackend.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -92,6 +93,7 @@ namespace ARMSBackend
             services.AddScoped<IUsersRepository, UserRepository>();
 
             services.AddDbContext<AppContext>();
+            services.AddAutoMapper(typeof(CommonMappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

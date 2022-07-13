@@ -1,4 +1,7 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,15 +28,58 @@ namespace ARMSBackend.Repository
 
         public List<User> AllUsers()
         {
-            List<User> users = _context.Users.ToList();
+            List<User> users = _context.Users
+                .Include(u => u.Branch)
+                .Include(u => u.UserRole)
+                .Include(u => u.Organization)
+                .ToList();
 
             return users;
         }
 
         public User GetUser(int userid)
         {
-            User user = _context.Users.Find(userid);
+            var user = _context.Users
+                .Include(u => u.Branch)
+                .Include(u => u.UserRole)
+                .Include(u => u.Organization)
+                .FirstOrDefault(u => u.Id == userid);
+
             return user;
         }
+
+        public User UpdateUser(int userid, UserEditDto user)
+        {
+            try
+            {
+                var currUser = _context.Users.Find(userid);
+                currUser.Username = user.Username;
+                currUser.Email = user.Email;
+                _context.SaveChanges();
+                return currUser;
+            }
+            catch (Exception)
+            {
+                throw;
+            }   
+        }
+
+        public bool DeleteUser(int userid)
+        {
+            try
+            {
+                var user = _context.Users.Find(userid);
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+        }
+
     }
 }

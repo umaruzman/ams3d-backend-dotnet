@@ -1,25 +1,21 @@
-﻿using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel;
+﻿using ARMSBackend.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ARMSBackend.Models
+namespace ARMSBackend.DTOs
 {
-    public class User : BaseEntity
+    public class UserReadDto
     {
-        [SwaggerSchema(ReadOnly = true)]
         public int Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        [DefaultValue("user")]
         public string UserType { get; set; }
-        [DefaultValue(true)]
         public bool UserStatus { get; set; }
-        [DefaultValue(1)]
-        public int UserRoleId { get; set; }
         public UserRole UserRole { get; set; }
-        public int? BranchId { get; set; }
         public Branch? Branch { get; set; }
-        public int? OrganizationId { get; set; }
         public Organization? Organization { get; set; }
     }
 }
