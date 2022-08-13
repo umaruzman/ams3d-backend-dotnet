@@ -7,53 +7,52 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ARMSBackend;
 using ARMSBackend.Models;
-using ARMSBackend.DTOs;
 
 namespace ARMSBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetsController : ControllerBase
+    public class MetricsController : ControllerBase
     {
         private readonly AppContext _context;
 
-        public AssetsController(AppContext context)
+        public MetricsController(AppContext context)
         {
             _context = context;
         }
 
-        // GET: api/Assets
+        // GET: api/Metrics
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AssetReadDto>>> GetAssets()
+        public async Task<ActionResult<IEnumerable<Metric>>> GetMetrics()
         {
-            return await _context.Assets.Include(a => a.AssetType).Include(a => a.Model).Select(a => new AssetReadDto(a)).ToListAsync();
+            return await _context.Metrics.ToListAsync();
         }
 
-        // GET: api/Assets/5
+        // GET: api/Metrics/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<AssetReadDto>> GetAsset(int id)
+        public async Task<ActionResult<Metric>> GetMetric(int id)
         {
-            var asset = await _context.Assets.Include(a => a.AssetType).Include(a => a.Model).FirstOrDefaultAsync(a => a.Id == id);
+            var metric = await _context.Metrics.FindAsync(id);
 
-            if (asset == null)
+            if (metric == null)
             {
                 return NotFound();
             }
 
-            return new AssetReadDto(asset);
+            return metric;
         }
 
-        // PUT: api/Assets/5
+        // PUT: api/Metrics/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsset(int id, Asset asset)
+        public async Task<IActionResult> PutMetric(int id, Metric metric)
         {
-            if (id != asset.Id)
+            if (id != metric.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(asset).State = EntityState.Modified;
+            _context.Entry(metric).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +60,7 @@ namespace ARMSBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AssetExists(id))
+                if (!MetricExists(id))
                 {
                     return NotFound();
                 }
@@ -74,36 +73,36 @@ namespace ARMSBackend.Controllers
             return NoContent();
         }
 
-        // POST: api/Assets
+        // POST: api/Metrics
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Asset>> PostAsset(Asset asset)
+        public async Task<ActionResult<Metric>> PostMetric(Metric metric)
         {
-            _context.Assets.Add(asset);
+            _context.Metrics.Add(metric);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAsset", new { id = asset.Id }, asset);
+            return CreatedAtAction("GetMetric", new { id = metric.Id }, metric);
         }
 
-        // DELETE: api/Assets/5
+        // DELETE: api/Metrics/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsset(int id)
+        public async Task<IActionResult> DeleteMetric(int id)
         {
-            var asset = await _context.Assets.FindAsync(id);
-            if (asset == null)
+            var metric = await _context.Metrics.FindAsync(id);
+            if (metric == null)
             {
                 return NotFound();
             }
 
-            _context.Assets.Remove(asset);
+            _context.Metrics.Remove(metric);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool AssetExists(int id)
+        private bool MetricExists(int id)
         {
-            return _context.Assets.Any(e => e.Id == id);
+            return _context.Metrics.Any(e => e.Id == id);
         }
     }
 }
