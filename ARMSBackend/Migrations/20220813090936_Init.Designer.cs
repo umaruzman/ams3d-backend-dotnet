@@ -10,111 +10,141 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ARMSBackend.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20220713073942_Init")]
+    [Migration("20220813090936_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseSerialColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.17")
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
             modelBuilder.Entity("ARMSBackend.Models.Asset", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .UseSerialColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
+
+                    b.Property<int?>("AssetTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ModelId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<object>("Properties")
+                        .HasColumnType("jsonb");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AssetTypeId");
+
+                    b.HasIndex("ModelId");
 
                     b.ToTable("Assets");
                 });
 
-            modelBuilder.Entity("ARMSBackend.Models.Branch", b =>
+            modelBuilder.Entity("ARMSBackend.Models.AssetType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .UseSerialColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
-                    b.Property<string>("Address")
+                    b.Property<object>("DefaultProperties")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Type")
                         .HasColumnType("text");
-
-                    b.Property<string>("Contact")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("OrganizationId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("Branches");
+                    b.ToTable("AssetTypes");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Address = "",
-                            Contact = "00000000",
-                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(9305),
-                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(9320),
-                            Name = "TestOrganization",
-                            OrganizationId = 1
+                            Type = "Asset Type 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Type = "Asset Type 2"
                         });
                 });
 
-            modelBuilder.Entity("ARMSBackend.Models.Organization", b =>
+            modelBuilder.Entity("ARMSBackend.Models.Metric", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .UseSerialColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
-                    b.Property<string>("Contact")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime?>("LastUpdate")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<int>("MetricTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricTypeId");
+
+                    b.ToTable("Metrics");
+                });
+
+            modelBuilder.Entity("ARMSBackend.Models.MetricType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Unit")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("MetricsType");
+                });
+
+            modelBuilder.Entity("ARMSBackend.Models.Model", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
+
+                    b.Property<object>("ModelDetails")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("ModelIdentifier")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Models");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Contact = "00000000",
-                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 210, DateTimeKind.Local).AddTicks(4336),
-                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 212, DateTimeKind.Local).AddTicks(7397),
-                            Name = "TestOrganization",
-                            Status = "active"
+                            ModelName = "Model 1"
                         });
                 });
 
@@ -123,10 +153,7 @@ namespace ARMSBackend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .UseSerialColumn();
-
-                    b.Property<int?>("BranchId")
-                        .HasColumnType("integer");
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -136,9 +163,6 @@ namespace ARMSBackend.Migrations
 
                     b.Property<DateTime?>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("OrganizationId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Password")
                         .HasColumnType("text");
@@ -157,10 +181,6 @@ namespace ARMSBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId");
-
-                    b.HasIndex("OrganizationId");
-
                     b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
@@ -169,9 +189,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(5198),
+                            CreatedAt = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(3459),
                             Email = "super@admin.com",
-                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(5236),
+                            LastUpdate = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(7700),
                             Password = "password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -181,11 +201,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 2,
-                            BranchId = 1,
-                            CreatedAt = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(9783),
+                            CreatedAt = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8965),
                             Email = "first@admin.com",
-                            LastUpdate = new DateTime(2022, 7, 13, 13, 9, 41, 213, DateTimeKind.Local).AddTicks(9798),
-                            OrganizationId = 1,
+                            LastUpdate = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8973),
                             Password = "Password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -199,7 +217,7 @@ namespace ARMSBackend.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .UseSerialColumn();
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
                     b.Property<string>("Role")
                         .HasColumnType("text");
@@ -221,34 +239,39 @@ namespace ARMSBackend.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ARMSBackend.Models.Branch", b =>
+            modelBuilder.Entity("ARMSBackend.Models.Asset", b =>
                 {
-                    b.HasOne("ARMSBackend.Models.Organization", "Organization")
+                    b.HasOne("ARMSBackend.Models.AssetType", "AssetType")
                         .WithMany()
-                        .HasForeignKey("OrganizationId");
+                        .HasForeignKey("AssetTypeId");
 
-                    b.Navigation("Organization");
+                    b.HasOne("ARMSBackend.Models.Model", "Model")
+                        .WithMany()
+                        .HasForeignKey("ModelId");
+
+                    b.Navigation("AssetType");
+
+                    b.Navigation("Model");
+                });
+
+            modelBuilder.Entity("ARMSBackend.Models.Metric", b =>
+                {
+                    b.HasOne("ARMSBackend.Models.MetricType", "MetricType")
+                        .WithMany()
+                        .HasForeignKey("MetricTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MetricType");
                 });
 
             modelBuilder.Entity("ARMSBackend.Models.User", b =>
                 {
-                    b.HasOne("ARMSBackend.Models.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId");
-
-                    b.HasOne("ARMSBackend.Models.Organization", "Organization")
-                        .WithMany()
-                        .HasForeignKey("OrganizationId");
-
                     b.HasOne("ARMSBackend.Models.UserRole", "UserRole")
                         .WithMany()
                         .HasForeignKey("UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Branch");
-
-                    b.Navigation("Organization");
 
                     b.Navigation("UserRole");
                 });

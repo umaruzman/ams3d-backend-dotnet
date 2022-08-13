@@ -15,7 +15,5 @@ namespace ARMSBackend.DTOs
         public string UserType { get; set; }
         public bool UserStatus { get; set; }
         public UserRole UserRole { get; set; }
-        public Branch? Branch { get; set; }
-        public Organization? Organization { get; set; }
     }
 }

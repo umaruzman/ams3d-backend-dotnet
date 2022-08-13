@@ -17,7 +17,5 @@ namespace ARMSBackend.DTOs
         public bool UserStatus { get; set; }
         [DefaultValue(1)]
         public int UserRoleId { get; set; }
-        public int? BranchId { get; set; }
-        public int? OrganizationId { get; set; }
     }
 }

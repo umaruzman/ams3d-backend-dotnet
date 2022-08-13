@@ -24,30 +24,8 @@ namespace ARMSBackend
                 }
             );
 
-            modelBuilder.Entity<Organization>().HasData(
-                new Organization
-                {
-                    Id = 1,
-                    Name = "TestOrganization",
-                    Contact = "00000000",
-                    Status = "active",
-                    CreatedAt = DateTime.Now,
-                    LastUpdate = DateTime.Now
-                }
-            );
 
-            modelBuilder.Entity<Branch>().HasData(
-                new
-                {
-                    Id = 1,
-                    Name = "TestOrganization",
-                    Contact = "00000000",
-                    Address = "",
-                    OrganizationId = 1,
-                    CreatedAt = DateTime.Now,
-                    LastUpdate = DateTime.Now,
-                }
-            );
+
 
             modelBuilder.Entity<User>().HasData(
                 new
@@ -69,12 +47,33 @@ namespace ARMSBackend
                     Password = "Password",
                     Email = "first@admin.com",
                     UserType = "admin",
-                    OrganizationId = 1,
-                    BranchId = 1,
                     UserStatus = true,
                     UserRoleId = 1,
                     CreatedAt =  DateTime.Now,
                     LastUpdate = DateTime.Now
+                }
+            );
+
+
+            modelBuilder.Entity<AssetType>().HasData(
+                new
+                {
+                    Id = 1,
+                    Type = "Asset Type 1",
+                },
+                new
+                {
+                    Id = 2,
+                    Type = "Asset Type 2",
+                }
+            );
+
+            modelBuilder.Entity<Model>().HasData(
+                new
+                {
+                    Id = 1,
+                    ModelModelIdentifier = "5024",
+                    ModelName = "Model 1"
                 }
             );
         }

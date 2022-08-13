@@ -17,9 +17,5 @@ namespace ARMSBackend.Models
         [DefaultValue(1)]
         public int UserRoleId { get; set; }
         public UserRole UserRole { get; set; }
-        public int? BranchId { get; set; }
-        public Branch? Branch { get; set; }
-        public int? OrganizationId { get; set; }
-        public Organization? Organization { get; set; }
     }
 }

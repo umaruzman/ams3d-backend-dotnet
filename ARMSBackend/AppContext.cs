@@ -49,10 +49,12 @@ namespace ARMSBackend
         }
 
 
-        public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Branch> Branches { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Asset> Assets { get; set; }
+        public DbSet<AssetType> AssetTypes { get; set; }
+        public DbSet<Model> Models { get; set; }
+        public DbSet<Metric> Metrics { get; set; }
+        public DbSet<MetricType> MetricsType { get; set; }  
     }
 }

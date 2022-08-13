@@ -29,9 +29,7 @@ namespace ARMSBackend.Repository
         public List<User> AllUsers()
         {
             List<User> users = _context.Users
-                .Include(u => u.Branch)
                 .Include(u => u.UserRole)
-                .Include(u => u.Organization)
                 .ToList();
 
             return users;
@@ -40,9 +38,7 @@ namespace ARMSBackend.Repository
         public User GetUser(int userid)
         {
             var user = _context.Users
-                .Include(u => u.Branch)
                 .Include(u => u.UserRole)
-                .Include(u => u.Organization)
                 .FirstOrDefault(u => u.Id == userid);
 
             return user;
