@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ARMSBackend;
 using ARMSBackend.Models;
+using ARMSBackend.DTOs;
 
 namespace ARMSBackend.Controllers
 {
@@ -23,9 +24,51 @@ namespace ARMSBackend.Controllers
 
         // GET: api/Metrics
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Metric>>> GetMetrics()
+        public async Task<ActionResult<IEnumerable<Metric>>> GetMetrics(int? asset, int? metricType)
         {
-            return await _context.Metrics.ToListAsync();
+            var q = _context.Metrics.Where(m=>m.Id==m.Id);
+
+            if (asset != null)
+            {
+                q = q.Where(m => m.AssetId == asset);
+            }
+
+            if (metricType != null)
+            {
+                q = q.Where(m => m.MetricTypeId == metricType);
+            }
+
+            return await q.ToListAsync();
+        }
+
+        // GET: api/Metrics
+        [HttpGet]
+        [Route("chart/{assetId}/{metricTypeId}")]
+        public List<PlotlyChart<DateTime, double>> GetChart(int assetId, int metricTypeId)
+        {
+            var q = _context.Metrics
+                            .Where(m => m.AssetId == assetId)
+                            .Where(m => m.MetricTypeId == metricTypeId)
+                            .OrderBy(m => m.DateTime);
+
+
+            var data = q.ToList();
+
+            var chart = new List<PlotlyChart<DateTime, double>>();
+
+            
+
+            var plot1 = new PlotlyChart<DateTime, double>("lines");
+
+            foreach (var item in data)
+            {
+                plot1.addToX(item.DateTime);
+                plot1.addToY(item.Value);
+            }
+
+            chart.Add(plot1);
+  
+            return chart;
         }
 
         // GET: api/Metrics/5

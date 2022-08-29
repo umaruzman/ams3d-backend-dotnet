@@ -9,5 +9,8 @@ namespace ARMSBackend.Models
         public DateTime DateTime { get; set; }
         public int MetricTypeId { get; set; }
         public MetricType MetricType { get; set; }
+
+        public int AssetId { get; set; }
+        public Asset Asset { get; set; }
     }
 }
