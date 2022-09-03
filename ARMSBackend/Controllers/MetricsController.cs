@@ -8,9 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using ARMSBackend;
 using ARMSBackend.Models;
 using ARMSBackend.DTOs;
+using System.Net.Http;
+using System.IO;
+using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace ARMSBackend.Controllers
 {
+    public class ForecasetResponeData {
+        public double[] data { get; set; }
+        public string[] dates { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class MetricsController : ControllerBase
@@ -58,7 +67,7 @@ namespace ARMSBackend.Controllers
 
             
 
-            var plot1 = new PlotlyChart<DateTime, double>("lines");
+            var plot1 = new PlotlyChart<DateTime, double>("lines", "Current");
 
             foreach (var item in data)
             {
@@ -70,6 +79,41 @@ namespace ARMSBackend.Controllers
   
             return chart;
         }
+
+        static HttpClient httpClient = new HttpClient();
+
+        // GET: api/Metrics
+        [HttpGet]
+        [Route("chart/forecast/{assetId}/{metricTypeId}")]
+        public async Task<List<PlotlyChart<DateTime, double>>> GetForecastedChart(int assetId, int metricTypeId)
+        {
+
+            string getData;
+            ForecasetResponeData result = new ForecasetResponeData();
+
+            var BASE_URL = AppData.Configuration.GetSection("APIs").GetSection("PythonForecast").Value;
+
+            HttpResponseMessage response = await httpClient.GetAsync($"{BASE_URL}/predict-metrics?assetId={assetId}&metricType={metricTypeId}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                getData = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<ForecasetResponeData>(getData);
+            }
+
+            var chart = new List<PlotlyChart<DateTime, double>>();
+
+
+            var plot1 = new PlotlyChart<DateTime, double>("lines","Forecasted", result.dates.Select(d => DateTime.Parse(d)).ToList(), result.data.ToList());
+
+
+            chart.Add(plot1);
+
+            return chart;
+
+        }
+
+
 
         // GET: api/Metrics/5
         [HttpGet("{id}")]
