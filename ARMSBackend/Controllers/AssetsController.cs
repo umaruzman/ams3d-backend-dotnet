@@ -29,6 +29,39 @@ namespace ARMSBackend.Controllers
             return await _context.Assets.Include(a => a.AssetType).Include(a => a.Model).Select(a => new AssetReadDto(a)).ToListAsync();
         }
 
+        // GET: api/Assets
+        [HttpGet]
+        [Route("onmodel")]
+        public async Task<ActionResult<IEnumerable<AssetModelItem>>> GetAssetsOnModel()
+        {
+            return await _context.AssetModelItems.Include(a => a.Asset).Include(a => a.Model).ToListAsync();
+        }
+
+        // GET: api/Assets
+        [HttpGet]
+        [Route("latestmetrics/{id}")]
+        public ActionResult<IEnumerable<object>> GetAssetsLatestMetrics(int id)
+        {
+            var assetMetricTypes = _context.Metrics.Where(a => a.AssetId == id).Select(a => a.MetricTypeId).Distinct().ToList();
+
+            List<object> metrics =  new List<object>();
+
+            foreach (var metricType in assetMetricTypes)
+            {
+                var metric = _context.Metrics
+                    .Where(a => a.AssetId == id)
+                    .Where(a => a.MetricTypeId == metricType)
+                    .OrderByDescending(x=>x.DateTime)
+                    .Include(a=>a.MetricType)
+                    .First();
+                metrics.Add(metric);
+            }
+
+            return metrics;
+        }
+
+
+
         // GET: api/Assets/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AssetReadDto>> GetAsset(int id)

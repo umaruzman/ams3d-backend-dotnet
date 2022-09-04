@@ -65,27 +65,6 @@ namespace ARMSBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Metrics",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Value = table.Column<double>(type: "double precision", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    MetricTypeId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Metrics", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Metrics_MetricsType_MetricTypeId",
-                        column: x => x.MetricTypeId,
-                        principalTable: "MetricsType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Assets",
                 columns: table => new
                 {
@@ -139,6 +118,54 @@ namespace ARMSBackend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AssetModelItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    AssetId = table.Column<int>(type: "integer", nullable: false),
+                    DBID = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssetModelItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AssetModelItems_Assets_AssetId",
+                        column: x => x.AssetId,
+                        principalTable: "Assets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Metrics",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    Value = table.Column<double>(type: "double precision", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    MetricTypeId = table.Column<int>(type: "integer", nullable: false),
+                    AssetId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Metrics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Metrics_Assets_AssetId",
+                        column: x => x.AssetId,
+                        principalTable: "Assets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Metrics_MetricsType_MetricTypeId",
+                        column: x => x.MetricTypeId,
+                        principalTable: "MetricsType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AssetTypes",
                 columns: new[] { "Id", "DefaultProperties", "Type" },
@@ -167,9 +194,14 @@ namespace ARMSBackend.Migrations
                 columns: new[] { "Id", "CreatedAt", "Email", "LastUpdate", "Password", "UserRoleId", "UserStatus", "UserType", "Username" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(3459), "super@admin.com", new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(7700), "password", 1, true, "super-admin", "superadmin" },
-                    { 2, new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8965), "first@admin.com", new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8973), "Password", 1, true, "admin", "admin1" }
+                    { 1, new DateTime(2022, 9, 4, 22, 44, 9, 201, DateTimeKind.Local).AddTicks(2869), "super@admin.com", new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(4082), "password", 1, true, "super-admin", "superadmin" },
+                    { 2, new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5384), "first@admin.com", new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5392), "Password", 1, true, "admin", "admin1" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetModelItems_AssetId",
+                table: "AssetModelItems",
+                column: "AssetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_AssetTypeId",
@@ -180,6 +212,11 @@ namespace ARMSBackend.Migrations
                 name: "IX_Assets_ModelId",
                 table: "Assets",
                 column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Metrics_AssetId",
+                table: "Metrics",
+                column: "AssetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Metrics_MetricTypeId",
@@ -195,7 +232,7 @@ namespace ARMSBackend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Assets");
+                name: "AssetModelItems");
 
             migrationBuilder.DropTable(
                 name: "Metrics");
@@ -204,16 +241,19 @@ namespace ARMSBackend.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "AssetTypes");
-
-            migrationBuilder.DropTable(
-                name: "Models");
+                name: "Assets");
 
             migrationBuilder.DropTable(
                 name: "MetricsType");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AssetTypes");
+
+            migrationBuilder.DropTable(
+                name: "Models");
         }
     }
 }

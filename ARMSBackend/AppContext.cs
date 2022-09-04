@@ -55,6 +55,7 @@ namespace ARMSBackend
         public DbSet<AssetType> AssetTypes { get; set; }
         public DbSet<Model> Models { get; set; }
         public DbSet<Metric> Metrics { get; set; }
-        public DbSet<MetricType> MetricsType { get; set; }  
+        public DbSet<MetricType> MetricsType { get; set; }
+        public DbSet<AssetModelItem> AssetModelItems { get; set; }
     }
 }

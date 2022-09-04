@@ -47,6 +47,26 @@ namespace ARMSBackend.Migrations
                     b.ToTable("Assets");
                 });
 
+            modelBuilder.Entity("ARMSBackend.Models.AssetModelItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
+
+                    b.Property<int>("AssetId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DBID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssetId");
+
+                    b.ToTable("AssetModelItems");
+                });
+
             modelBuilder.Entity("ARMSBackend.Models.AssetType", b =>
                 {
                     b.Property<int>("Id")
@@ -84,6 +104,9 @@ namespace ARMSBackend.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn);
 
+                    b.Property<int>("AssetId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -94,6 +117,8 @@ namespace ARMSBackend.Migrations
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AssetId");
 
                     b.HasIndex("MetricTypeId");
 
@@ -187,9 +212,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(3459),
+                            CreatedAt = new DateTime(2022, 9, 4, 22, 44, 9, 201, DateTimeKind.Local).AddTicks(2869),
                             Email = "super@admin.com",
-                            LastUpdate = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(7700),
+                            LastUpdate = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(4082),
                             Password = "password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -199,9 +224,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8965),
+                            CreatedAt = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5384),
                             Email = "first@admin.com",
-                            LastUpdate = new DateTime(2022, 8, 13, 14, 39, 36, 203, DateTimeKind.Local).AddTicks(8973),
+                            LastUpdate = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5392),
                             Password = "Password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -252,13 +277,32 @@ namespace ARMSBackend.Migrations
                     b.Navigation("Model");
                 });
 
+            modelBuilder.Entity("ARMSBackend.Models.AssetModelItem", b =>
+                {
+                    b.HasOne("ARMSBackend.Models.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("AssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Asset");
+                });
+
             modelBuilder.Entity("ARMSBackend.Models.Metric", b =>
                 {
+                    b.HasOne("ARMSBackend.Models.Asset", "Asset")
+                        .WithMany()
+                        .HasForeignKey("AssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ARMSBackend.Models.MetricType", "MetricType")
                         .WithMany()
                         .HasForeignKey("MetricTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Asset");
 
                     b.Navigation("MetricType");
                 });
