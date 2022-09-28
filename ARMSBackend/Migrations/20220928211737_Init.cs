@@ -125,7 +125,8 @@ namespace ARMSBackend.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
                     AssetId = table.Column<int>(type: "integer", nullable: false),
-                    DBID = table.Column<int>(type: "integer", nullable: false)
+                    DBID = table.Column<int>(type: "integer", nullable: false),
+                    ModelId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -134,6 +135,12 @@ namespace ARMSBackend.Migrations
                         name: "FK_AssetModelItems_Assets_AssetId",
                         column: x => x.AssetId,
                         principalTable: "Assets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssetModelItems_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -194,14 +201,19 @@ namespace ARMSBackend.Migrations
                 columns: new[] { "Id", "CreatedAt", "Email", "LastUpdate", "Password", "UserRoleId", "UserStatus", "UserType", "Username" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 9, 4, 22, 44, 9, 201, DateTimeKind.Local).AddTicks(2869), "super@admin.com", new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(4082), "password", 1, true, "super-admin", "superadmin" },
-                    { 2, new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5384), "first@admin.com", new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5392), "Password", 1, true, "admin", "admin1" }
+                    { 1, new DateTime(2022, 9, 29, 2, 47, 36, 564, DateTimeKind.Local).AddTicks(5635), "super@admin.com", new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(7007), "password", 1, true, "super-admin", "superadmin" },
+                    { 2, new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(8453), "first@admin.com", new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(8461), "Password", 1, true, "admin", "admin1" }
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssetModelItems_AssetId",
                 table: "AssetModelItems",
                 column: "AssetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetModelItems_ModelId",
+                table: "AssetModelItems",
+                column: "ModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_AssetTypeId",

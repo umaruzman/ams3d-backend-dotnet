@@ -1,4 +1,5 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -23,7 +24,7 @@ namespace ARMSBackend.Repository
         {
             this.iconfiguration = iconfiguration;
         }
-        public Tokens Authenticate(User users)
+        public Tokens Authenticate(AuthRequestDTO users)
         {
             //if (!UsersRecords.Any(x => x.Key == users.Name && x.Value == users.Password))
             //{

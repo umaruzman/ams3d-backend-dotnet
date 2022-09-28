@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ARMSBackend.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20220904171409_Init")]
+    [Migration("20220928211737_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,9 +62,14 @@ namespace ARMSBackend.Migrations
                     b.Property<int>("DBID")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ModelId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssetId");
+
+                    b.HasIndex("ModelId");
 
                     b.ToTable("AssetModelItems");
                 });
@@ -214,9 +219,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2022, 9, 4, 22, 44, 9, 201, DateTimeKind.Local).AddTicks(2869),
+                            CreatedAt = new DateTime(2022, 9, 29, 2, 47, 36, 564, DateTimeKind.Local).AddTicks(5635),
                             Email = "super@admin.com",
-                            LastUpdate = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(4082),
+                            LastUpdate = new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(7007),
                             Password = "password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -226,9 +231,9 @@ namespace ARMSBackend.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5384),
+                            CreatedAt = new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(8453),
                             Email = "first@admin.com",
-                            LastUpdate = new DateTime(2022, 9, 4, 22, 44, 9, 202, DateTimeKind.Local).AddTicks(5392),
+                            LastUpdate = new DateTime(2022, 9, 29, 2, 47, 36, 565, DateTimeKind.Local).AddTicks(8461),
                             Password = "Password",
                             UserRoleId = 1,
                             UserStatus = true,
@@ -287,7 +292,15 @@ namespace ARMSBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ARMSBackend.Models.Model", "Model")
+                        .WithMany()
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Asset");
+
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("ARMSBackend.Models.Metric", b =>

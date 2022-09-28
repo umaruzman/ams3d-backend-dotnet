@@ -1,9 +1,10 @@
-﻿using ARMSBackend.Models;
+﻿using ARMSBackend.DTOs;
+using ARMSBackend.Models;
 
 namespace ARMSBackend.Repository
 {
     public interface IJWTManagerRepository
     {
-        Tokens Authenticate(User users);
+        Tokens Authenticate(AuthRequestDTO users);
     }
 }
