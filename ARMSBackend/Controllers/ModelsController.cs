@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ARMSBackend;
 using ARMSBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ARMSBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ModelsController : ControllerBase

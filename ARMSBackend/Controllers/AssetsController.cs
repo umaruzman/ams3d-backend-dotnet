@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using ARMSBackend;
 using ARMSBackend.Models;
 using ARMSBackend.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ARMSBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -132,6 +134,32 @@ namespace ARMSBackend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Assets/assign
+        [HttpPost]
+        [Route("assign")]
+        public async Task<ActionResult<IEnumerable<AssetModelItem>>> AssignAsset(AsssignAssetReq asset)
+        {
+            try
+            {
+                AssetModelItem item = new AssetModelItem()
+                {
+                    AssetId = asset.AssetId,
+                    DBID = asset.dbid,
+                    ModelId = asset.ModelId
+                };
+
+
+                await _context.AssetModelItems.AddAsync(item);
+                _context.SaveChanges();
+
+                return await _context.AssetModelItems.Include(a => a.Asset).Include(a => a.Model).ToListAsync();
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         private bool AssetExists(int id)

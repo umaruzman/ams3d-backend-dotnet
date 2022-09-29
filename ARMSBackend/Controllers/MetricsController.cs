@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.IO;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ARMSBackend.Controllers
 {
@@ -20,6 +21,7 @@ namespace ARMSBackend.Controllers
         public string[] dates { get; set; }
     }
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MetricsController : ControllerBase
